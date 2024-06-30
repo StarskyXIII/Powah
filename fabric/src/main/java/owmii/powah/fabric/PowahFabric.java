@@ -1,10 +1,13 @@
 package owmii.powah.fabric;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.SharedConstants;
 import net.minecraft.world.InteractionResult;
 import owmii.powah.Powah;
+import owmii.powah.block.cable.CableNet;
 import owmii.powah.lib.item.ItemBase;
 import owmii.powah.lib.util.Wrench;
 
@@ -18,6 +21,9 @@ public class PowahFabric implements ModInitializer {
         Powah.init();
 
         SharedConstants.CHECK_DATA_FIXER_SCHEMA = checkDataFixer;
+
+        ServerChunkEvents.CHUNK_UNLOAD.register(CableNet::removeChunk);
+        ClientChunkEvents.CHUNK_UNLOAD.register(CableNet::removeChunk);
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (Wrench.removeWithWrench(player, world, hand, hitResult)) {
